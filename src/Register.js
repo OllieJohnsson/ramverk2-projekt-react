@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Message from "./Message";
 
 
 class Register extends Component {
@@ -20,8 +21,10 @@ class Register extends Component {
 
     register(event) {
         event.preventDefault();
-        if (this.state.password1 != this.state.password2) {
-            return console.log("passwords doesn't match error");
+        if (this.state.password !== this.state.passwordCheck) {
+            return this.setState({
+                errorMessage: "Du måste skriva in samma lösenord"
+            });
         }
 
         fetch("https://proj-api.olliej.me/register", {
@@ -34,8 +37,12 @@ class Register extends Component {
         })
         .then(res => res.json())
         .then(obj => {
-            console.log(obj);
-            this.props.handleReceivedToken(obj.token, obj.message);
+            if (obj.errors) {
+                return this.setState({
+                    errorMessage: obj.errors[0].detail
+                });
+            }
+            this.props.handleReceivedToken(obj.token, obj.userId, obj.message);
         })
     };
 
@@ -43,32 +50,33 @@ class Register extends Component {
 
     handleInputChange(event) {
         event.preventDefault();
-        console.log(event.target.value);
-        console.log(event.target.name);
-
         this.setState({
             [event.target.name]: event.target.value
         })
     }
 
 
+    componentDidMount() {
+        document.getElementsByTagName("input")[0].focus();
+    }
+
+
     render() { 
-
+        const message = this.state.errorMessage ? <Message errorMessage={this.state.errorMessage} /> : null;
         return (
-           <div>
-           <h1>Registrera</h1>
-
-            <form onSubmit={this.register}>
-            <input name="username" placeholder="Användarnamn" type="text" required value={this.state.username} onChange={this.handleInputChange}></input>
-            <input name="email" placeholder="E-post" type="email" required value={this.state.email} onChange={this.handleInputChange}></input>
-            <input name="firstName" placeholder="Förnamn" type="text" required value={this.state.firstName} onChange={this.handleInputChange}></input>
-            <input name="lastName" placeholder="Efternamn" type="text" required value={this.state.lastName} onChange={this.handleInputChange}></input>
-            <input name="password" placeholder="Lösenord" type="password" required value={this.state.password} onChange={this.handleInputChange}></input>
-            <input name="passwordCheck" placeholder="Upprepa lösenord" type="password" required value={this.state.passwordCheck} onChange={this.handleInputChange}></input>
-            <input type="submit" value="Registrera"></input>
-            </form>
-
-           </div>
+           <main>
+               <h1>Registrera</h1>
+                <form onSubmit={this.register}>
+                    <input name="username" placeholder="Användarnamn" type="text" required value={this.state.username} onChange={this.handleInputChange}></input>
+                    <input name="email" placeholder="E-post" type="email" required value={this.state.email} onChange={this.handleInputChange}></input>
+                    <input name="firstName" placeholder="Förnamn" type="text" required value={this.state.firstName} onChange={this.handleInputChange}></input>
+                    <input name="lastName" placeholder="Efternamn" type="text" required value={this.state.lastName} onChange={this.handleInputChange}></input>
+                    <input name="password" placeholder="Lösenord" type="password" required value={this.state.password} onChange={this.handleInputChange}></input>
+                    <input name="passwordCheck" placeholder="Upprepa lösenord" type="password" required value={this.state.passwordCheck} onChange={this.handleInputChange}></input>
+                    <input type="submit" value="Registrera"></input>
+                </form>
+                {message}
+        </main>
        );
     }
 }

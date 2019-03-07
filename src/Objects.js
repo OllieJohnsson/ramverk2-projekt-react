@@ -1,40 +1,123 @@
 import React, { Component } from 'react';
-
+import Message from "./Message";
 
 class Objects extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
-            objects: []
+            objects: [],
+            selected: null,
+            amount: 1
         };
+
+        this.showBuy = this.showBuy.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleBuy = this.handleBuy.bind(this);
     }
 
 
     fetchObjects() {
-        fetch("https://proj-api.olliej.me/objects")
+        fetch("https://proj-api.olliej.me/objects", {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-access-token': this.props.token
+            }
+        })
         .then(res => res.json())
         .then(data => this.setState({objects: data.data}))
     };
 
 
-    componentDidMount() {
+    componentWillMount() {
         this.fetchObjects()
     }
 
+    showBuy(event) {
+        event.preventDefault();
+        this.setState({
+            selected: parseInt(event.target.id),
+            amount: 1,
+            errorMessage: null,
+            message: null
+        });
+    }
 
 
+    handleBuy(event) {
+        event.preventDefault();
+        fetch("https://proj-api.olliej.me/user/buy", {
+            method: "post",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'x-access-token': this.props.token
+            },
+            body: JSON.stringify({
+                userId: this.props.userId,
+                objectId: this.state.selected,
+                amount: this.state.amount
+            })
+        })
+        .then(res => res.json())
+        .then((obj) => {
+            console.log(obj);
+            if (obj.errors) {
+                return this.setState({
+                    errorMessage: obj.errors[0].detail,
+                    message: null
+                });
+            }
+            this.setState({
+                errorMessage: null,
+                message: obj.message
+            });
+            this.fetchObjects();
+        })
+    }
 
-    render() { 
+    handleInputChange(event) {
+        this.setState({
+            [event.target.name]: parseInt(event.target.value)
+        });
+    }
 
-        const objects = this.state.objects.map((object, index) => {
-            return <p key={index}>{object.name} {object.price}kr</p>
+
+    render() {
+        let message = this.state.errorMessage || this.state.message ?
+            <Message errorMessage={this.state.errorMessage} message={this.state.message} />
+             : null;
+        const objects = this.state.objects.map((object) => {
+            let buyArea = this.state.selected === object.id ?
+                <div className="buyArea">
+                    <form onSubmit={this.handleBuy}>
+                        <input type="number" value={this.state.amount} name="amount" placeholder="Antal" autoComplete="off" onChange={this.handleInputChange}></input>
+                        <input type="submit" value="Köp"></input>
+                    </form>
+                    {message}
+                </div>
+                : null;
+
+            let showBuyButton = this.state.selected !== object.id ? <button id={object.id} onClick={this.showBuy}>Köp</button> : null;
+            return (
+                <div key={object.id} className="object">
+                    <h2>{object.name}</h2>
+                    <p>Id: {object.id}</p>
+                    <p>Pris: {object.price.toFixed(2)}kr</p>
+                    <p>I lager: {object.stock}st</p>
+                    {showBuyButton}
+                    {buyArea}
+                </div>
+            );
         })
 
+
+
         return (
-           <div>
-           <h1>OBJECTS</h1>
-           {objects}
-           </div>
+        <main>
+            <h1>Objekt</h1>
+            {objects}
+        </main>
        );
     }
 }

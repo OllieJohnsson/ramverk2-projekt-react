@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import Message from "./Message";
 
 class Login extends Component {
     constructor(props) {
@@ -8,7 +8,6 @@ class Login extends Component {
             username: "",
             password: ""
         };
-
         this.login = this.login.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -26,8 +25,14 @@ class Login extends Component {
         })
         .then(res => res.json())
         .then(obj => {
-            console.log(obj);
-            this.props.handleReceivedToken(obj.token, obj.message);
+            if (obj.errors) {
+                console.log("err");
+                console.log(obj);
+                this.setState({errorMessage: obj.errors[0].detail});
+                return;
+            }
+
+            this.props.handleReceivedToken(obj.token, obj.userId, obj.message);
         })
     };
 
@@ -39,17 +44,23 @@ class Login extends Component {
         });
     }
 
+    componentDidMount() {
+        document.getElementsByTagName("input")[0].focus();
+    }
 
-    render() { 
+
+    render() {
+        const message = this.state.errorMessage ? <Message errorMessage={this.state.errorMessage} /> : null;
         return (
-           <div>
+           <main>
                <h1>Logga in</h1>
                <form onSubmit={this.login}>
                     <input name="username" placeholder="Användarnamn" type="text" required value={this.state.username} onChange={this.handleInputChange}></input>
                     <input name="password" placeholder="Lösenord" type="password" required value={this.state.password} onChange={this.handleInputChange}></input>
                     <input type="submit" value="Logga in"></input>
                </form>
-           </div>
+               {message}
+           </main>
        );
     }
 }
