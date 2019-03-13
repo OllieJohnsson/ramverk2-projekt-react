@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Router, Route } from "react-router-dom";
 import history from './history';
 
-
 import './style/App.css';
 import './style/Navigation.css';
 import './style/Form.css';
@@ -16,6 +15,7 @@ import Register from './Register';
 import Login from './Login';
 import Objects from './Objects';
 import Depot from './Depot';
+import Stock from './Stock';
 
 
 
@@ -32,7 +32,6 @@ class App extends Component {
 
         this.handleReceivedToken = this.handleReceivedToken.bind(this);
         this.logout = this.logout.bind(this);
-        // this.checkToken = this.checkToken.bind(this);
     }
 
     handleReceivedToken(token, userId, message) {
@@ -46,28 +45,6 @@ class App extends Component {
         history.push("/");
         console.log(message);
     }
-
-    // componentDidMount() {
-    //     this.checkToken();
-    // }
-    //
-    // checkToken() {
-    //     console.log("CHECKING TOKEN");
-    //     fetch('https://proj-api.olliej.me/checkToken', {
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             'x-access-token': this.state.token
-    //         },
-    //     }).then((res) => {
-    //         if (res.status !== 200) {
-    //             this.setState({
-    //                 token: null
-    //             });
-    //             history.push("/");
-    //         }
-    //     });
-    // }
 
 
     logout() {
@@ -94,6 +71,7 @@ class App extends Component {
                     <Route exact path="/logga-in" render={(props) => <Login {...props} handleReceivedToken={this.handleReceivedToken} />} />
                     <Route exact path="/objekt" render={(props) => <Objects {...props} token={this.state.token} userId={this.state.userId} />} />
                     <Route exact path="/depå" render={(props) => <Depot {...props} token={this.state.token} userId={this.state.userId} />} />
+                    <Route exact path="/stock" render={(props) => <Stock {...props} token={this.state.token} userId={this.state.userId} />} />
                 </div>
             </Router>
         );

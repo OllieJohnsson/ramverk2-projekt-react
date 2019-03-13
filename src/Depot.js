@@ -161,7 +161,7 @@ class Depot extends Component {
                 <div key={object.id}>
                     <h2>{object.name}</h2>
                     <p>Antal: {object.amount}st</p>
-                    <p>Värde: {object.value}kr</p>
+                    <p>Värde: {object.value.toFixed(2)}kr</p>
                     {showSellButton}
                     {sellArea}
                 </div>

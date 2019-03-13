@@ -102,9 +102,8 @@ class Objects extends Component {
             return (
                 <div key={object.id} className="object">
                     <h2>{object.name}</h2>
-                    <p>Id: {object.id}</p>
                     <p>Pris: {object.price.toFixed(2)}kr</p>
-                    <p>I lager: {object.stock}st</p>
+                    <p>Tillgängligt: {object.stock}st</p>
                     {showBuyButton}
                     {buyArea}
                 </div>
