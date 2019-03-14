@@ -18,7 +18,6 @@ class Stock extends Component {
 
         this.setupGraph = this.setupGraph.bind(this);
         this.updateGraph = this.updateGraph.bind(this);
-        // this.updatePrice = this.updatePrice.bind(this);
         this.setupSocket();
     }
 
@@ -43,30 +42,19 @@ class Stock extends Component {
     setupGraph(data) {
         var palette = new Rickshaw.Color.Palette({ scheme: 'colorwheel' });
         let graphContainer = document.getElementById("graphContainer");
-        data.map(object => {
+        data.forEach(object => {
+            console.log(object);
             let graphElement = document.createElement("div");
-            let yAxisElement = document.createElement("div");
+            // let yAxisElement = document.createElement("div");
             graphElement.id = `graph_${this.slugify(object.name)}`;
-            yAxisElement.id = `y-axis_${this.slugify(object.name)}`;
-            yAxisElement.className = "y-axis";
+            // yAxisElement.id = `y-axis_${this.slugify(object.name)}`;
+            // yAxisElement.className = "y-axis";
             graphContainer.appendChild(graphElement);
-            graphElement.appendChild(yAxisElement);
-
-            let graph = new Rickshaw.Graph( {
+            // graphElement.appendChild(yAxisElement);
+        //
+            let graph = new Rickshaw.Graph({
                 element: graphElement,
                 renderer: "line",
-                // width: "500",
-                // height: "100",
-                // series: [
-                //     {
-                //         color: '#123',
-                //         data: [ { x: 0, y: 23}, { x: 1, y: 15 }, { x: 2, y: 79 } ]
-                //     }, {
-                //         color: 'lightblue',
-                //         data: [ { x: 0, y: 30}, { x: 1, y: 20 }, { x: 2, y: 64 } ]
-                //     }
-                // ]
-
                 series: new Rickshaw.Series.FixedDuration([{
                     name: object.name,
                     color: palette.color(),
@@ -76,11 +64,6 @@ class Stock extends Component {
                     timeBase: new Date().getTime() / 1000
                 })
             });
-
-
-            // graph.configure({
-            //     width: graphContainer.clientWidth,
-            // });
 
             new Rickshaw.Graph.Axis.Time( { graph: graph } );
 
@@ -94,36 +77,30 @@ class Stock extends Component {
                 graph: graph
             });
 
-            graph.render();
-
             let slug = this.slugify(object.name);
-
             this.setState({
-                graphs: [...this.state.graphs, {name: object.name, graph: graph}]
+                graphs: [...this.state.graphs, {name: slug, graph: graph}],
+                first: false
             });
-            this.setState({first: false});
+
+            graph.render();
         });
     }
 
 
     updateGraph(data) {
-        console.log("updating", data);
-
-        data.map(object => {
-            console.log("EHHEHE", object);
+        data.forEach(object => {
             let slug = this.slugify(object.name);
             let data = {
-                [object.name]: object.price
+                [slug]: object.price
             };
 
-
             let graphObject = this.state.graphs.filter(graphObject => {return graphObject.name === object.name})[0];
-            console.log("GO", graphObject);
-            graphObject.graph.series.addData(data);
-            graphObject.graph.render();
+            if (graphObject) {
+                graphObject.graph.series.addData(data);
+                graphObject.graph.render();
+            }
         });
-
-        console.log(this.state);
     }
 
 
@@ -141,6 +118,7 @@ class Stock extends Component {
 
 
     render() {
+        console.log(this.state);
         return (
             <main>
                 <h1>Stock</h1>

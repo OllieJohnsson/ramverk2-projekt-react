@@ -91,10 +91,10 @@ class Objects extends Component {
             let buyArea = this.state.selected === object.id ?
                 <div className="buyArea">
                     <form onSubmit={this.handleBuy}>
+                        <label>Antal</label>
                         <input type="number" value={this.state.amount} name="amount" placeholder="Antal" autoComplete="off" onChange={this.handleInputChange}></input>
                         <input type="submit" value="Köp"></input>
                     </form>
-                    {message}
                 </div>
                 : null;
 
@@ -102,8 +102,18 @@ class Objects extends Component {
             return (
                 <div key={object.id} className="object">
                     <h2>{object.name}</h2>
-                    <p>Pris: {object.price.toFixed(2)}kr</p>
-                    <p>Tillgängligt: {object.stock}st</p>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Pris:</td>
+                                <td>{object.price.toFixed(2)}kr</td>
+                            </tr>
+                            <tr>
+                                <td>Tillgängligt:</td>
+                                <td>{object.stock}st</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     {showBuyButton}
                     {buyArea}
                 </div>
@@ -116,6 +126,7 @@ class Objects extends Component {
         <main>
             <h1>Objekt</h1>
             {objects}
+            {message}
         </main>
        );
     }
