@@ -1,3 +1,10 @@
+.objects {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .object {
     background-color: white;
     display: flex;
@@ -18,13 +25,17 @@
 
 
 
-.buyArea {
+.choiceArea {
     margin: 1rem;
     overflow: hidden;
     opacity: 0;
     animation: slideDown 1s cubic-bezier(0.19, 1, 0.30, 1) 0.1s forwards;
 }
 
-.buyArea form {
+
+
+
+
+.choiceArea form {
     margin: 0;
 }

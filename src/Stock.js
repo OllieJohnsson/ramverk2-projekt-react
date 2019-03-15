@@ -3,6 +3,8 @@ import io from "socket.io-client";
 import Rickshaw from 'rickshaw';
 import "rickshaw/rickshaw.min.css";
 
+import functions from "./functions";
+
 
 class Stock extends Component {
     constructor(props) {
@@ -46,7 +48,7 @@ class Stock extends Component {
             console.log(object);
             let graphElement = document.createElement("div");
             // let yAxisElement = document.createElement("div");
-            graphElement.id = `graph_${this.slugify(object.name)}`;
+            graphElement.id = `graph_${functions.slugify(object.name)}`;
             // yAxisElement.id = `y-axis_${this.slugify(object.name)}`;
             // yAxisElement.className = "y-axis";
             graphContainer.appendChild(graphElement);
@@ -77,7 +79,7 @@ class Stock extends Component {
                 graph: graph
             });
 
-            let slug = this.slugify(object.name);
+            let slug = functions.slugify(object.name);
             this.setState({
                 graphs: [...this.state.graphs, {name: slug, graph: graph}],
                 first: false
@@ -90,7 +92,7 @@ class Stock extends Component {
 
     updateGraph(data) {
         data.forEach(object => {
-            let slug = this.slugify(object.name);
+            let slug = functions.slugify(object.name);
             let data = {
                 [slug]: object.price
             };
@@ -106,18 +108,12 @@ class Stock extends Component {
 
 
 
-    slugify(text) {
-        return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w-]+/g, '')       // Remove all non-word chars
-        .replace(/--+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
-    }
 
 
 
     render() {
+        console.log(functions.capitalizeFirstLetter("hejhej"));
+        console.log(process.env.NODE_ENV);
         console.log(this.state);
         return (
             <main>

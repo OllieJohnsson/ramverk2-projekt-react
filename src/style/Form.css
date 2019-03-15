@@ -39,3 +39,22 @@ input[type="password"]::placeholder,
 input[type="number"]::placeholder {
     color: #B7BBC8;
 }
+
+
+.cancelButton {
+    margin-bottom: 0.6rem;
+    border-color: #ED3B59;
+    width: 2rem;
+    height: 2rem;
+    align-self: flex-end;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cancelButton:hover {
+    background-color: #ED3B59;
+}
+.cancelButton:hover img {
+    filter: brightness(100);
+}

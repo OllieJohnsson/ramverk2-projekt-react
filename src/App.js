@@ -16,6 +16,7 @@ import Login from './Login';
 import Objects from './Objects';
 import Depot from './Depot';
 import Stock from './Stock';
+import Message from './Message';
 
 
 
@@ -27,11 +28,43 @@ class App extends Component {
         let localUserId = localStorage.getItem('userId');
         this.state = {
             token: localToken !== "undefined" ? JSON.parse(localToken) : null,
-            userId: localUserId !== "undefined" ? JSON.parse(localUserId) : null
+            userId: localUserId !== "undefined" ? JSON.parse(localUserId) : null,
+            success: null,
+            error: null
         };
 
         this.handleReceivedToken = this.handleReceivedToken.bind(this);
         this.logout = this.logout.bind(this);
+
+        this.success = this.success.bind(this);
+        this.error = this.error.bind(this);
+    }
+
+    success(message) {
+        this.setState({
+            success: message,
+            error: null
+        });
+        let app = this;
+        setTimeout(function () {
+            app.setState({
+                success: null,
+                error: null
+            });
+        }, 4000);
+    }
+    error(message) {
+        this.setState({
+            success: null,
+            error: message
+        });
+        let app = this;
+        setTimeout(function () {
+            app.setState({
+                success: null,
+                error: null
+            });
+        }, 4000);
     }
 
     handleReceivedToken(token, userId, message) {
@@ -66,12 +99,13 @@ class App extends Component {
                 <div className="App">
                     <Menu token={this.state.token} logout={this.logout}></Menu>
 
+                    <Message success={this.state.success} error={this.state.error}/>
                     <Route exact path="/" component={Home} />
                     <Route exact path="/registrera" render={(props) => <Register {...props} handleReceivedToken={this.handleReceivedToken} />} />
                     <Route exact path="/logga-in" render={(props) => <Login {...props} handleReceivedToken={this.handleReceivedToken} />} />
-                    <Route exact path="/objekt" render={(props) => <Objects {...props} token={this.state.token} userId={this.state.userId} />} />
-                    <Route exact path="/depå" render={(props) => <Depot {...props} token={this.state.token} userId={this.state.userId} />} />
-                    <Route exact path="/stock" render={(props) => <Stock {...props} token={this.state.token} userId={this.state.userId} />} />
+                    <Route exact path="/objekt" render={(props) => <Objects {...props} token={this.state.token} userId={this.state.userId} logout={this.logout} success={this.success} error={this.error} />} />
+                    <Route exact path="/depå" render={(props) => <Depot {...props} token={this.state.token} userId={this.state.userId} logout={this.logout} success={this.success} error={this.error} />} />
+                    <Route exact path="/stock" render={(props) => <Stock {...props} token={this.state.token} userId={this.state.userId} logout={this.logout} />} />
                 </div>
             </Router>
         );

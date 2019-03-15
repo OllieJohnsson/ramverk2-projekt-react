@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import Message from "./Message";
+import functions from "./functions";
+import Choice from "./Choice";
 
 class Depot extends Component {
 
@@ -10,18 +11,18 @@ class Depot extends Component {
             username: "",
             balance: 0,
             deposit: false,
-            deposition: 0,
+            deposition: "",
             myObjects: [],
-            selected: null
+            selected: null,
+            amount: 0
         }
         this.fetchDepot = this.fetchDepot.bind(this);
         this.fetchBoughtObjects = this.fetchBoughtObjects.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleDeposit = this.handleDeposit.bind(this);
-        this.showSell = this.showSell.bind(this);
+        this.showHideSell = this.showHideSell.bind(this);
         this.handleSell = this.handleSell.bind(this);
-        this.showDeposit = this.showDeposit.bind(this);
-
+        this.showHideDeposit = this.showHideDeposit.bind(this);
     }
 
 
@@ -37,7 +38,7 @@ class Depot extends Component {
         .then(res => res.json())
         .then(obj => {
             if (obj.errors) {
-                this.setState({errorMessage: obj.errors[0].detail});
+                this.props.logout();
                 return;
             }
             this.setState({
@@ -72,7 +73,7 @@ class Depot extends Component {
 
     handleInputChange(event) {
         this.setState({
-            [event.target.name]: parseInt(event.target.value)
+            [event.target.name]: parseInt(event.target.value) || ""
         });
     }
 
@@ -93,22 +94,21 @@ class Depot extends Component {
         .then(res => res.json())
         .then(obj => {
             this.setState({
-                message: obj.message,
                 deposit: false,
-                deposition: 0,
-
+                deposition: "",
             });
+            this.props.success(obj.message);
             this.fetchDepot();
         })
     }
 
-    showSell(event) {
+
+    showHideSell(event) {
         event.preventDefault();
+        let cancel = event.target.name === "cancel";
         this.setState({
-            selected: parseInt(event.target.id),
+            selected: cancel ? null : parseInt(event.target.id),
             amount: 1,
-            errorMessage: null,
-            message: null
         });
     }
 
@@ -130,17 +130,10 @@ class Depot extends Component {
         })
         .then(res => res.json())
         .then((obj) => {
-            console.log(obj);
             if (obj.errors) {
-                return this.setState({
-                    errorMessage: obj.errors[0].detail,
-                    message: null
-                });
+                return this.props.error(obj.errors[0].detail);
             }
-            this.setState({
-                errorMessage: null,
-                message: obj.message
-            });
+            this.props.success(obj.message);
             this.fetchDepot();
             this.fetchBoughtObjects();
         })
@@ -148,40 +141,31 @@ class Depot extends Component {
 
 
 
-    showDeposit() {
-        this.setState({deposit: true});
+    showHideDeposit(event) {
+        event.preventDefault();
+        let cancel = event.target.name === "cancel";
+        this.setState({deposit: cancel ? false : true});
     }
 
-    render() {
-        console.log(this.state);
-        let message = this.state.errorMessage || this.state.message ?
-            <Message errorMessage={this.state.errorMessage} message={this.state.message} />
-             : null;
 
-        let showDepositButton = this.state.deposit ? null : <button onClick={this.showDeposit}>Sätt in pengar</button>;
+
+    render() {
+        let showDepositButton = this.state.deposit ? null : <button onClick={this.showHideDeposit}>Sätt in pengar</button>;
         let depositArea = this.state.deposit ? (
-            <form id="depositForm" onSubmit={this.handleDeposit}>
-                <label>Summa</label>
-               <input type="number" name="deposition" value={this.state.deposition} onChange={this.handleInputChange}></input>
-               <input type="submit" value="Sätt in pengar"></input>
-           </form>
+           <Choice action={this.handleDeposit} label="Summa" name="deposition" value={this.state.deposition} handleInputChange={this.handleInputChange} buttonTitle={"Sätt in pengar"} cancel={this.showHideDeposit}/>
        ) : null;
 
         let myObjects = this.state.myObjects.map(object => {
             let sellArea = this.state.selected === object.id ?
                 <div className="sellArea">
-                    <form onSubmit={this.handleSell}>
-                        <label>Antal</label>
-                        <input type="number" value={this.state.amount} name="amount" placeholder="Antal" autoComplete="off" onChange={this.handleInputChange}></input>
-                        <input type="submit" value="Sälj"></input>
-                    </form>
-                    {message}
+                    <Choice action={this.handleSell} label="Antal" name="amount" value={this.state.amount} handleInputChange={this.handleInputChange} buttonTitle={"Sälj"} cancel={this.showHideSell}/>
                 </div>
                 : null;
-            let showSellButton = this.state.selected !== object.id ? <button id={object.id} onClick={this.showSell}>Sälj</button> : null;
+
+            let showSellButton = this.state.selected !== object.id ? <button id={object.id} onClick={this.showHideSell}>Sälj</button> : null;
             return (
                 <div key={object.id} className="object">
-                    <h2>{object.name}</h2>
+                    <h2>{functions.capitalizeFirstLetter(object.name)}</h2>
                     <table>
                         <tbody>
                             <tr>
@@ -202,13 +186,9 @@ class Depot extends Component {
 
         let noObjectsMessage = this.state.myObjects.length < 1 ? "Du har inga köpta objekt..." : null;
 
-
         return (
-
             <main>
-                {message}
                 <h1>Depå</h1>
-
                 <div className="area">
                     <table>
                         <tbody>
@@ -228,7 +208,7 @@ class Depot extends Component {
                 </div>
                 <div className="area">
                     <h1>Mina objekt</h1>
-                    {myObjects}
+                    <div className="objects">{myObjects}</div>
                     {noObjectsMessage}
                 </div>
             </main>

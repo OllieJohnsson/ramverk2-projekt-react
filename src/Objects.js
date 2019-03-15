@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Message from "./Message";
+import functions from "./functions";
+import Choice from "./Choice";
 
 class Objects extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class Objects extends Component {
             amount: 1
         };
 
-        this.showBuy = this.showBuy.bind(this);
+        this.showHideBuy = this.showHideBuy.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleBuy = this.handleBuy.bind(this);
     }
@@ -25,7 +26,12 @@ class Objects extends Component {
             }
         })
         .then(res => res.json())
-        .then(data => this.setState({objects: data.data}))
+        .then(objects => {
+            if (objects.error) {
+                return this.props.logout();
+            }
+            this.setState({objects: objects.data});
+        })
     };
 
 
@@ -33,15 +39,15 @@ class Objects extends Component {
         this.fetchObjects()
     }
 
-    showBuy(event) {
+    showHideBuy(event) {
         event.preventDefault();
+        let cancel = event.target.name === "cancel";
         this.setState({
-            selected: parseInt(event.target.id),
-            amount: 1,
-            errorMessage: null,
-            message: null
+            selected: cancel ? null : parseInt(event.target.id),
+            amount: 1
         });
     }
+
 
 
     handleBuy(event) {
@@ -61,17 +67,10 @@ class Objects extends Component {
         })
         .then(res => res.json())
         .then((obj) => {
-            console.log(obj);
             if (obj.errors) {
-                return this.setState({
-                    errorMessage: obj.errors[0].detail,
-                    message: null
-                });
+                return this.props.error(obj.errors[0].detail);
             }
-            this.setState({
-                errorMessage: null,
-                message: obj.message
-            });
+            this.props.success(obj.message);
             this.fetchObjects();
         })
     }
@@ -84,24 +83,15 @@ class Objects extends Component {
 
 
     render() {
-        let message = this.state.errorMessage || this.state.message ?
-            <Message errorMessage={this.state.errorMessage} message={this.state.message} />
-             : null;
         const objects = this.state.objects.map((object) => {
             let buyArea = this.state.selected === object.id ?
-                <div className="buyArea">
-                    <form onSubmit={this.handleBuy}>
-                        <label>Antal</label>
-                        <input type="number" value={this.state.amount} name="amount" placeholder="Antal" autoComplete="off" onChange={this.handleInputChange}></input>
-                        <input type="submit" value="Köp"></input>
-                    </form>
-                </div>
+                <Choice action={this.handleBuy} label="Antal" name="amount" value={this.state.amount} handleInputChange={this.handleInputChange} buttonTitle={"Köp"} cancel={this.showHideBuy}/>
                 : null;
 
-            let showBuyButton = this.state.selected !== object.id ? <button id={object.id} onClick={this.showBuy}>Köp</button> : null;
+            let showBuyButton = this.state.selected !== object.id ? <button id={object.id} onClick={this.showHideBuy}>Köp</button> : null;
             return (
                 <div key={object.id} className="object">
-                    <h2>{object.name}</h2>
+                    <h2>{functions.capitalizeFirstLetter(object.name)}</h2>
                     <table>
                         <tbody>
                             <tr>
@@ -125,8 +115,7 @@ class Objects extends Component {
         return (
         <main>
             <h1>Objekt</h1>
-            {objects}
-            {message}
+            <div className="objects">{objects}</div>
         </main>
        );
     }
