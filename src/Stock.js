@@ -47,13 +47,11 @@ class Stock extends Component {
         data.forEach(object => {
             console.log(object);
             let graphElement = document.createElement("div");
-            // let yAxisElement = document.createElement("div");
             graphElement.id = `graph_${functions.slugify(object.name)}`;
-            // yAxisElement.id = `y-axis_${this.slugify(object.name)}`;
-            // yAxisElement.className = "y-axis";
             graphContainer.appendChild(graphElement);
-            // graphElement.appendChild(yAxisElement);
-        //
+
+            let slug = functions.slugify(object.name);
+            console.log("slug: ", slug);
             let graph = new Rickshaw.Graph({
                 element: graphElement,
                 renderer: "line",
@@ -61,8 +59,8 @@ class Stock extends Component {
                     name: object.name,
                     color: palette.color(),
                 }], undefined, {
-                    timeInterval: 5000,
-                    maxDataPoints: 1000,
+                    timeInterval: 250,
+                    maxDataPoints: 100,
                     timeBase: new Date().getTime() / 1000
                 })
             });
@@ -79,10 +77,14 @@ class Stock extends Component {
                 graph: graph
             });
 
-            let slug = functions.slugify(object.name);
+
             this.setState({
                 graphs: [...this.state.graphs, {name: slug, graph: graph}],
                 first: false
+            });
+
+            object.history.forEach(x => {
+                graph.series.addData({[slug]: x.price});
             });
 
             graph.render();
@@ -96,6 +98,8 @@ class Stock extends Component {
             let data = {
                 [slug]: object.price
             };
+
+            console.log("DATA: ", data);
 
             let graphObject = this.state.graphs.filter(graphObject => {return graphObject.name === object.name})[0];
             if (graphObject) {
