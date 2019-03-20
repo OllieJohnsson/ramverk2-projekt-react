@@ -30,7 +30,7 @@ class Objects extends Component {
             if (objects.error) {
                 return this.props.logout();
             }
-            this.setState({objects: objects.data});
+            this.setState({objects: objects});
         })
     };
 

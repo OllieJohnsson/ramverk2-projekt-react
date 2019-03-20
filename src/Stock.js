@@ -45,13 +45,11 @@ class Stock extends Component {
         var palette = new Rickshaw.Color.Palette({ scheme: 'colorwheel' });
         let graphContainer = document.getElementById("graphContainer");
         data.forEach(object => {
-            console.log(object);
             let graphElement = document.createElement("div");
             graphElement.id = `graph_${functions.slugify(object.name)}`;
             graphContainer.appendChild(graphElement);
 
             let slug = functions.slugify(object.name);
-            console.log("slug: ", slug);
             let graph = new Rickshaw.Graph({
                 element: graphElement,
                 renderer: "line",
@@ -59,7 +57,7 @@ class Stock extends Component {
                     name: object.name,
                     color: palette.color(),
                 }], undefined, {
-                    timeInterval: 250,
+                    timeInterval: 60000,
                     maxDataPoints: 100,
                     timeBase: new Date().getTime() / 1000
                 })
@@ -99,8 +97,6 @@ class Stock extends Component {
                 [slug]: object.price
             };
 
-            console.log("DATA: ", data);
-
             let graphObject = this.state.graphs.filter(graphObject => {return graphObject.name === object.name})[0];
             if (graphObject) {
                 graphObject.graph.series.addData(data);
@@ -116,9 +112,6 @@ class Stock extends Component {
 
 
     render() {
-        console.log(functions.capitalizeFirstLetter("hejhej"));
-        console.log(process.env.NODE_ENV);
-        console.log(this.state);
         return (
             <main>
                 <h1>Stock</h1>
