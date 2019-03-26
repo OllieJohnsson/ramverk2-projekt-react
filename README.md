@@ -2,7 +2,7 @@
 Frontend för projektet i kursen ramverk2.
 
 
-Gör ett medvetet val av teknik och berätta utförligt i din README om vilka teknikval du har gjort och varför.
+<!-- Gör ett medvetet val av teknik och berätta utförligt i din README om vilka teknikval du har gjort och varför. -->
 
 
 För min frontend valde jag att fortsätta jobba med **React** som jag använt tidigare i kursen. Jag ville lära mig mer om hur det fungerar och se om jag kunde förbättra min kod. Jag skapade en del **React-komponenter** för att förenkla och minska upprepningen av min kod. Det blev bland annat en `Choice.js`-komponent som returnerar ett formulär för att exempelvis välja antal objekt vid köp eller försäljning. Jag skapade också en `Message.js`-komponent som visar upp ett fel- eller succé-meddelande från API:et. Med hjälp av **CSS** animeras meddelandet in och sedan ut efter ett par sekunder. Meddelandet blir kvar även om användaren går till en annan sida och behöver inte själv trycka bort det. För att anpassa min meny för att även kunna användas på små skärmar använde jag mig av paketet **react-bootstrap**. Det gjorde det enkelt att skapa en meny som kollapsar när skärmbredden går under en viss gräns.
