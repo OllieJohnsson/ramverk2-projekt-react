@@ -1,68 +1,12 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ramverk2-projekt-react
+Frontend för projektet i kursen ramverk2.
 
-## Available Scripts
 
-In the project directory, you can run:
+Gör ett medvetet val av teknik och berätta utförligt i din README om vilka teknikval du har gjort och varför.
 
-### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+För min frontend valde jag att fortsätta jobba med **React** som jag använt tidigare i kursen. Jag ville lära mig mer om hur det fungerar och se om jag kunde förbättra min kod. Jag skapade en del **React-komponenter** för att förenkla och minska upprepningen av min kod. Det blev bland annat en `Choice.js`-komponent som returnerar ett formulär för att exempelvis välja antal objekt vid köp eller försäljning. Jag skapade också en `Message.js`-komponent som visar upp ett fel- eller succé-meddelande från API:et. Med hjälp av **CSS** animeras meddelandet in och sedan ut efter ett par sekunder. Meddelandet blir kvar även om användaren går till en annan sida och behöver inte själv trycka bort det. För att anpassa min meny för att även kunna användas på små skärmar använde jag mig av paketet **react-bootstrap**. Det gjorde det enkelt att skapa en meny som kollapsar när skärmbredden går under en viss gräns.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Jag använde **Socket.io** för real-tids-delen av klienten. Jag hade inte använt det tidigare under kursen men ville testa hur det fungerade. Jag tyckte att det var smidigare än **Websockets** som jag använt tidigare, bland annat var det enklare att använda `this.socket.on("stocks", (data) => {};` för att anpassa vilken data som togs emot.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+För att visa grafer använde jag mig av **Rickshaw** som jag fått tips om i en kmom-video. Med hjälp av deras dokumentation och exempelkod i kurs-katalogen gick det ganska enkelt att skapa graferna lokalt. Jag fick däremot problem när jag skulle testa dem online. Efter lite läsande kom jag fram till att Reacts minifiering med webpack inte fungerade så bra med Rickshaw. Jag hittade till slut lösningen att "ejecta" mitt projekt för att sen kunna modifiera en konfigurations-fil. Efter att ha lagt till `mangled: {reserved: ['$super']}` i `webpack.config.js` fungerade det.

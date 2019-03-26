@@ -105,7 +105,7 @@ class App extends Component {
                     <Route exact path="/logga-in" render={(props) => <Login {...props} handleReceivedToken={this.handleReceivedToken} />} />
                     <Route exact path="/objekt" render={(props) => <Objects {...props} token={this.state.token} userId={this.state.userId} logout={this.logout} success={this.success} error={this.error} />} />
                     <Route exact path="/depå" render={(props) => <Depot {...props} token={this.state.token} userId={this.state.userId} logout={this.logout} success={this.success} error={this.error} />} />
-                    <Route exact path="/stock" render={(props) => <Stock {...props} token={this.state.token} userId={this.state.userId} logout={this.logout} />} />
+                    <Route exact path="/priser" render={(props) => <Stock {...props} token={this.state.token} userId={this.state.userId} logout={this.logout} />} />
                 </div>
             </Router>
         );

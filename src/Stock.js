@@ -46,6 +46,7 @@ class Stock extends Component {
         let graphContainer = document.getElementById("graphContainer");
         data.forEach(object => {
             let graphElement = document.createElement("div");
+            graphElement.className = "graphElement";
             graphElement.id = `graph_${functions.slugify(object.name)}`;
             graphContainer.appendChild(graphElement);
 
@@ -106,16 +107,13 @@ class Stock extends Component {
     }
 
 
-
-
-
-
-
     render() {
         return (
             <main>
-                <h1>Stock</h1>
-                <div id="graphContainer"></div>
+                <h1>Priser</h1>
+                <div className="area">
+                    <div id="graphContainer"></div>
+                </div>
             </main>
         );
     }

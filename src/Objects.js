@@ -91,7 +91,7 @@ class Objects extends Component {
             let showBuyButton = this.state.selected !== object.id ? <button id={object.id} onClick={this.showHideBuy}>Köp</button> : null;
             return (
                 <div key={object.id} className="object">
-                    <h2>{functions.capitalizeFirstLetter(object.name)}</h2>
+                    <h2>{`${functions.capitalizeFirstLetter(object.name)} ${object.icon}`}</h2>
                     <table>
                         <tbody>
                             <tr>

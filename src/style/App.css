@@ -84,6 +84,7 @@ label {
     flex-direction: column;
     align-items: center;
     width: 20rem;
+    text-align: center;
 }
 .area:not(:last-child) {
     margin-bottom: 6rem;
@@ -150,7 +151,12 @@ label {
     main {
         padding: 1rem;
     }
-    area {
+    .area,
+    .graphElement {
         width: 100%;
+    }
+
+    .object {
+        width: unset;
     }
 }
